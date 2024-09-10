@@ -17,5 +17,16 @@ class UsersRepository(BaseRepository):
                 query = f"""SELECT * FROM {cls.model} WHERE login = $1"""
 
                 result: Record = await connection.fetchrow(query, login)
-                print(dict(result))
+                if result:
+                    return dict(result)
+                return result
 
+    @classmethod
+    async def add(cls, login: str, hashed_password: str, pool: Pool):
+
+        async with pool.acquire() as connection:
+            async with connection.transaction():
+
+                query = f"""INSERT INTO {cls.model} (login, hashed_password) VALUES ($1, $2)"""
+
+                await connection.execute(query, login, hashed_password)

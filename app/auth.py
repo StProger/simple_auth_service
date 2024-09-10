@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-import jwt
+from jose import jwt
 from asyncpg import Pool
 from passlib.context import CryptContext
 from pydantic import EmailStr
