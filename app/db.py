@@ -1,4 +1,5 @@
 import asyncpg
+from asyncpg.pool import Pool
 
 from app.settings import settings
 
@@ -8,9 +9,9 @@ class Database:
     _instance_pool = None
 
     @classmethod
-    async def get_pool(cls):
+    async def get_pool(cls) -> Pool:
         if cls._instance_pool is None:
-            cls._instance_pool = await asyncpg.connect(
+            cls._instance_pool = await asyncpg.create_pool(
                 host=settings.DB_HOST,
                 port=settings.DB_PORT,
                 user=settings.DB_USER,
@@ -20,7 +21,7 @@ class Database:
         return cls._instance_pool
 
     @classmethod
-    async def close_pool(cls):
+    async def close_pool(cls) -> None:
         if cls._instance_pool:
             await cls._instance_pool.close()
             cls._instance_pool = None

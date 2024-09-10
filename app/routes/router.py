@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends
 
-from asyncpg.connection import Connection
+from asyncpg.pool import Pool
+
+from app.repository.base import BaseRepository
+from app.repository.users.repository import UsersRepository
 
 from app.db import Database
 
@@ -11,6 +14,7 @@ router = APIRouter(
 
 
 @router.post("/login")
-async def login(connection: Connection = Depends(Database.get_pool)):
+async def login(pool: Pool = Depends(Database.get_pool)):
 
-    print(connection)
+    result = await UsersRepository.find_one_or_none("ewgwebw", pool)
+    return result
